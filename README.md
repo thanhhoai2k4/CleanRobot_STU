@@ -2,6 +2,9 @@
 
 
 
+# System Requirements:
+ - Ubuntu 24.04 LTS
+ - Cài Ubuntu đi.
 
 # Tài liệu:
 
