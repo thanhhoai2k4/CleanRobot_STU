@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot name="clean_robot"
+       xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="base.urdf.xacro"/>
+    <xacro:include filename="wheels.urdf.xacro"/>
+    <xacro:include filename="sensors.urdf.xacro"/>
+
+</robot>
