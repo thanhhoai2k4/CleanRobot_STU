@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+clean_robot_ws/log/
+clean_robot_ws/install/
+clean_robot_ws/install_2_run.sh
