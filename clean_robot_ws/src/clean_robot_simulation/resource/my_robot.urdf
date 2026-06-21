@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<robot name="My robot">
+    <webots>
+        <plugin type="clean_robot_simulation.my_robot_driver.MyRobotDriver" />
+        
+        <device reference="rgb_camera" type="Camera">
+            <ros>
+                <topicName>/camera/image_raw</topicName>
+                <alwaysOn>true</alwaysOn>
+            </ros>
+        </device>
+
+        <device reference="depth_camera" type="RangeFinder">
+            <ros>
+                <topicName>/depth_camera/image_depth</topicName>
+                <alwaysOn>true</alwaysOn>
+            </ros>
+        </device>
+
+        <device reference="lidar" type="Lidar">
+            <ros>
+                <topicName>/scan</topicName>
+                <alwaysOn>true</alwaysOn>
+            </ros>
+        </device>
+    </webots>
+</robot>
