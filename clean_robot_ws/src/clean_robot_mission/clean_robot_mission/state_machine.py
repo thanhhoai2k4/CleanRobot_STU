@@ -1,0 +1,16 @@
+from enum import Enum
+
+
+class MissionState(Enum):
+
+    IDLE = "IDLE"
+
+    SEARCHING = "SEARCHING"
+
+    NAVIGATING_SEARCH = "NAVIGATING_SEARCH"
+
+    NAVIGATING_TO_TRASH = "NAVIGATING_TO_TRASH"
+
+    REACHED_TRASH = "REACHED_TRASH"
+
+    FAILED = "FAILED"
