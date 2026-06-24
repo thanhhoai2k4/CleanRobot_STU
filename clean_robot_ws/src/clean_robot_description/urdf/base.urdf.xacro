@@ -9,10 +9,11 @@
     <origin xyz="0 0 0.1" rpy="0 0 0"/>
   </joint>
 
+
   <link name="base_link">
     <visual>
       <geometry>
-        <box size="0.4 0.3 0.15"/>
+        <cylinder radius="0.045" length="0.08"/>
       </geometry>
       <material name="blue">
         <color rgba="0.0 0.0 0.8 1.0"/>

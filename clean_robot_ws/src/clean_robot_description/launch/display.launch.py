@@ -30,7 +30,21 @@ def generate_launch_description():
         output='screen'
     )
 
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+    )
+
+    diff_drive_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["diff_drive_controller", "--controller-manager", "/controller_manager"],
+    )
+
     return LaunchDescription([
         robot_state_publisher_node,
-        rviz_node
+        rviz_node,
+        joint_state_broadcaster_spawner,
+        diff_drive_controller_spawner,
     ])

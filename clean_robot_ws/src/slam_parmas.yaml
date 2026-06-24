@@ -1,0 +1,17 @@
+slam_toolbox:
+  ros__parameters:
+    # 1. BẮT BUỘC ĐỒNG BỘ THỜI GIAN
+    use_sim_time: true
+    
+    # 2. CHỈ ĐỊNH ĐÚNG KHUNG TOẠ ĐỘ
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_footprint
+    scan_topic: /scan
+    
+    # 3. Một vài thông số cơ bản cho mô phỏng
+    transform_publish_period: 0.05
+    map_update_interval: 1.0
+    resolution: 0.05
+    max_laser_range: 5.0
+    minimum_time_interval: 0.5

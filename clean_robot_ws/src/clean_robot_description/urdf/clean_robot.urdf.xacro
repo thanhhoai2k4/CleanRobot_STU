@@ -1,9 +1,65 @@
 <?xml version="1.0"?>
-<robot name="clean_robot"
-       xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="clean_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:include filename="base.urdf.xacro"/>
     <xacro:include filename="wheels.urdf.xacro"/>
     <xacro:include filename="sensors.urdf.xacro"/>
 
+    <webots>
+        <plugin type="clean_robot_simulation.my_robot_driver.MyRobotDriver" />
+        
+        <device reference="rgb_camera" type="Camera">
+            <ros>
+                <topicName>/camera/image_raw</topicName>
+                <alwaysOn>true</alwaysOn>
+                <frameName>camera_link</frameName>
+                <alwaysOn>true</alwaysOn>
+            </ros>
+        </device>
+
+        <device reference="depth_camera" type="RangeFinder">
+        <ros>
+            <topicName>/depth_camera/image_depth</topicName>
+            <alwaysOn>true</alwaysOn>
+        </ros>
+        </device>
+
+        <device reference="lidar" type="Lidar">
+        <ros>
+            <topicName>/scan</topicName>
+            <alwaysOn>true</alwaysOn>
+            <frameName>lidar_link</frameName>
+            <alwaysOn>true</alwaysOn>
+            </ros>
+        </device>
+
+        <device reference="gps" type="GPS">
+            <ros>
+                <alwaysOn>true</alwaysOn>
+            </ros>
+        </device>
+
+        <device reference="inertial_unit" type="InertialUnit">
+            <ros>
+                <alwaysOn>true</alwaysOn>
+            </ros>
+        </device>
+
+    </webots>
+
+    <ros2_control name="WebotsControl" type="system">
+        <hardware>
+            <plugin>webots_ros2_control::Ros2ControlSystem</plugin>
+        </hardware>
+
+        <joint name="left_wheel_joint"> <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="right_wheel_joint"> <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
 </robot>

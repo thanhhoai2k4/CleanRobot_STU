@@ -190,12 +190,6 @@ Robot {
       minRange 0.05
       maxRange 5
     }
-    GPS {
-      name "gps"
-    }
-    InertialUnit {
-      name "inertial_unit"
-    }
     DistanceSensor {
       translation 0.042 0.02 0.063
       rotation 0 0 1 0.5236003061004253

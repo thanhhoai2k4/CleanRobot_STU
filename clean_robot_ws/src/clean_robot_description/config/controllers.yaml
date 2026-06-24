@@ -1,0 +1,30 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 30
+    use_sim_time: true
+
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+diff_drive_controller:
+  ros__parameters:
+    left_wheel_names: ["left_wheel_joint"]
+    right_wheel_names: ["right_wheel_joint"]
+    
+    # Khoảng cách giữa 2 bánh: 0.045 * 2 = 0.09m (Lấy từ trục Y trong wheels.urdf.xacro)
+    wheel_separation: 0.090
+    
+    # Bán kính bánh xe (Lấy từ wheels.urdf.xacro)
+    wheel_radius: 0.025
+    
+    publish_rate: 30.0
+    base_frame_id: base_footprint # Frame gốc của robot
+    odom_frame_id: odom           # Frame odometry sẽ được tạo ra
+    
+    # BẬT TÍNH NĂNG PHÁT TF TỪ ODOM -> BASE_FOOTPRINT
+    enable_odom_tf: true 
+    
+    cmd_vel_timeout: 0.25

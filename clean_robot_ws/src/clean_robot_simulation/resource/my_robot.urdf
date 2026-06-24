@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<!-- <?xml version="1.0" ?>
 <robot name="My robot">
     <webots>
         <plugin type="clean_robot_simulation.my_robot_driver.MyRobotDriver" />
@@ -24,4 +24,4 @@
             </ros>
         </device>
     </webots>
-</robot>
+</robot> -->

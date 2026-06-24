@@ -117,7 +117,10 @@ class ManualCmdNode(Node):
             self.get_logger().info(f"Nhận được lỗi: {e}")
     def stop_robot(self):
         twist = Twist()
-        self.velocity_publisher.publish(twist)
+        try:
+            self.velocity_publisher.publish(twist)
+        except Exception:
+            pass
 
 def main(args=None):
     rclpy.init(args=args)
@@ -128,8 +131,14 @@ def main(args=None):
         pass
     finally:
         node.stop_robot()
-        node.destroy_node()
-        rclpy.shutdown()
+        try:
+            node.destroy_node()
+        except (Exception, KeyboardInterrupt):
+            pass
+        try:
+            rclpy.shutdown()
+        except Exception:
+            pass
 
 
 if __name__ == '__main__':

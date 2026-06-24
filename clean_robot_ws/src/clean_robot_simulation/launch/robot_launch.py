@@ -1,52 +1,90 @@
 import os
+
+if 'WEBOTS_HOME' not in os.environ:
+    if os.path.exists('/snap/webots/current/usr/share/webots'):
+        os.environ['WEBOTS_HOME'] = '/snap/webots/current/usr/share/webots'
+    elif os.path.exists('/usr/local/webots'):
+        os.environ['WEBOTS_HOME'] = '/usr/local/webots'
+    else:
+        raise RuntimeError(
+            'WEBOTS_HOME is not set. Please export WEBOTS_HOME first.'
+        )
+
 import launch
 from launch import LaunchDescription
+from launch.actions import RegisterEventHandler, EmitEvent
+from launch.event_handlers import OnProcessExit
+from launch.events import Shutdown
+from launch.substitutions import Command
+
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
+
 from webots_ros2_driver.webots_controller import WebotsController
 from webots_ros2_driver.webots_launcher import WebotsLauncher
 
+
 def generate_launch_description():
-    package_dir = get_package_share_directory('clean_robot_simulation')
+    sim_dir = get_package_share_directory('clean_robot_simulation')
+    desc_dir = get_package_share_directory('clean_robot_description')
 
-    # Trỏ đúng tới file cấu hình urdf trong folder resource
-    robot_description_path = os.path.join(package_dir, 'resource', 'my_robot.urdf')
-    
-    # Trỏ tới file môi trường .wbt
-    world_path = os.path.join(package_dir, 'worlds', 'my_world.wbt')
+    world_path = os.path.join(sim_dir, 'worlds', 'my_world.wbt')
+    xacro_file = os.path.join(desc_dir, 'urdf', 'clean_robot.urdf.xacro')
 
-    # 1. Khởi động môi trường Webots
+    robot_description_content = Command([
+        'xacro ',
+        xacro_file
+    ])
+
     webots = WebotsLauncher(
-        world=world_path
+        world=world_path, 
+        ros2_supervisor=True
     )
 
-    # 2. Khai báo Driver kết nối với Webots
+
     my_robot_driver = WebotsController(
-        robot_name='my_robot', # Lưu ý: Tên này phải trùng với thuộc tính "name" của con robot trong file my_world.wbt
+        robot_name='my_robot',
         parameters=[
-            {'robot_description': robot_description_path},
-            {'use_sim_time': True} 
+            {'robot_description': robot_description_content},
+            {'use_sim_time': True}
         ]
     )
 
-    # 3. Khởi động Node điều khiển tay (file clean_robot_simulation.py của bạn)
+    robot_state_publisher_node = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        output='screen',
+        parameters=[
+            {'robot_description': robot_description_content},
+            {'use_sim_time': True}
+        ]
+    )
+
     manual_cmd_node = Node(
         package='clean_robot_simulation',
         executable='simulation_test_node',
         name='manual_cmd_node',
-        output='screen'
+        output='screen',
+        parameters=[
+            {'use_sim_time': True}
+        ]
+    )
+
+    shutdown_handler = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=webots,
+            on_exit=[
+                EmitEvent(event=Shutdown())
+            ],
+        )
     )
 
     return LaunchDescription([
         webots,
+        webots._supervisor,
         my_robot_driver,
+        robot_state_publisher_node,
         manual_cmd_node,
-        
-        # Cấu hình tự động tắt ROS 2 khi bạn bấm tắt phần mềm Webots
-        launch.actions.RegisterEventHandler(
-            event_handler=launch.event_handlers.OnProcessExit(
-                target_action=webots,
-                on_exit=[launch.actions.EmitEvent(event=launch.events.Shutdown())],
-            )
-        )
+        shutdown_handler
     ])

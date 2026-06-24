@@ -1,0 +1,21 @@
+CleanRobot_STU/
+├── .antigravity/                      # Thư mục cấu hình cốt lõi của Antigravity Agent
+│   ├── rules.md                       # QUAN TRỌNG: Định nghĩa quy tắc lập trình, hướng dẫn và giới hạn cho Agent
+│   └── workflows/                     # Chứa các kịch bản chạy mẫu (ví dụ: test, build)
+│       └── ros2_build_workflow.md     # Quy trình tự động build & test các package ROS2
+├── agent/                             # Định nghĩa các skill tùy chỉnh của Agent
+│   └── skills/
+│       └── ros2_helper/
+│           ├── SKILL.md               # Mô tả skill (metadata) và cách Agent gọi
+│           └── ros2_commands.py       # Code bổ trợ (ví dụ: tự động source setup.bash, colcon build)
+├── AGENTS.md                          # Cung cấp ngữ cảnh tổng quan của dự án (Context, nhiệm vụ từng package)
+├── clean_robot_ws/                    # Workspace chính của ROS2 (chứa code robot)
+│   └── src/
+│       ├── clean_robot_msgs/
+│       ├── clean_robot_description/
+│       ├── clean_robot_perception/
+│       ├── clean_robot_mission/
+│       ├── clean_robot_navigation/
+│       └── clean_robot_simulation/
+├── docs/                              # Tài liệu hướng dẫn & sơ đồ hệ thống
+└── robot.urdf                         # File mô tả mô hình Robot URDF
