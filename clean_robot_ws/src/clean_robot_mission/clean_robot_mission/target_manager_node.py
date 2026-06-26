@@ -13,10 +13,23 @@ class TargetManagerNode(Node):
     def __init__(self):
         super().__init__('target_manager_node')
 
+        self.declare_parameter(
+            'candidate_topic',
+            '/trash/tracked_candidates'
+        )
+        self.rejected_targets = set()
+
         self.subscription = self.create_subscription(
             TrashCandidateArray,
-            '/trash/candidates',
+            self.get_parameter('candidate_topic').value,
             self.candidate_callback,
+            10
+        )
+
+        self.rejected_subscription = self.create_subscription(
+            String,
+            '/trash/rejected_id',
+            self.rejected_callback,
             10
         )
 
@@ -34,21 +47,28 @@ class TargetManagerNode(Node):
 
         self.get_logger().info('TargetManagerNode started')
 
+    def rejected_callback(self, msg):
+        if msg.data:
+            self.rejected_targets.add(msg.data)
+
     def candidate_callback(self, msg):
         if len(msg.candidates) == 0:
             return
 
-        reachable = [c for c in msg.candidates if c.reachable]
+        reachable = [
+            c for c in msg.candidates
+            if c.reachable and c.id not in self.rejected_targets
+        ]
         if len(reachable) == 0:
             return
 
         best = max(reachable, key=lambda x: x.confidence)
 
-        self.target_pose_pub.publish(best.pose)
-
         target_id = String()
         target_id.data = best.id
         self.target_id_pub.publish(target_id)
+
+        self.target_pose_pub.publish(best.pose)
 
         self.get_logger().info(f'Selected target: {best.id}')
 

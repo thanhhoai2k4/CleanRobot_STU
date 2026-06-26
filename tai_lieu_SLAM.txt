@@ -10,7 +10,7 @@ SLAM: Cần /odom /tf /scan
 
 
 
- Cách chạy đúng theo workflow bạn muốn:
+ Cách chạy đúng theo như sau để tạo ra SLAM map:
 
   # Terminal 1
   source install/setup.bash
@@ -27,3 +27,52 @@ SLAM: Cần /odom /tf /scan
   # Terminal 4
   source install/setup.bash
   ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+
+  save map:
+  cd /home/thanhhoai/Truong_STU/CleanRobot_STU/clean_robot_ws
+  source install/setup.bash
+  mkdir -p src/clean_robot_navigation/maps
+  ros2 run nav2_map_server map_saver_cli -f src/clean_robot_navigation/maps/my_map
+
+
+
+  Mình build và chạy theo thứ tự này:
+
+  cd /home/thanhhoai/Truong_STU/CleanRobot_STU/clean_robot_ws
+
+  colcon build --symlink-install
+  source install/setup.bash
+  ros2 launch clean_robot_simulation robot_launch.py
+
+  Khi có thay đổi trong src/, nhất là worlds/*.wbt, setup.py, launch file, package resource, thì nên:
+
+  # 1. Tắt launch đang chạy: Ctrl+C
+
+  # 2. Build lại
+  cd /home/thanhhoai/Truong_STU/CleanRobot_STU/clean_robot_ws
+  colcon build --symlink-install
+
+  # 3. Source lại terminal
+  source install/setup.bash
+
+  # 4. Chạy lại simulation
+  ros2 launch clean_robot_simulation robot_launch.py
+
+  Để test robot điều khiển được, mở terminal khác rồi chạy:
+
+  cd /home/thanhhoai/Truong_STU/CleanRobot_STU/clean_robot_ws
+  source install/setup.bash
+
+  ros2 topic pub --once /robot/manual_cmd std_msgs/msg/String "{data: FORWARD}"
+
+  Dừng robot:
+
+  ros2 topic pub --once /robot/manual_cmd std_msgs/msg/String "{data: STOP}"
+
+  Hoặc test trực tiếp motor driver qua /cmd_vel:
+
+  timeout 4s ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.12}, angular: {z: 0.0}}" -r 10
+  ros2 topic echo --once /odom
+
+  Nếu /odom đổi x/y thì robot đã chạy thật trong Webots.

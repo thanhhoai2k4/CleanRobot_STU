@@ -20,12 +20,43 @@ class TrashDetectorNode(Node):
             'trash_detector_node'
         )
 
-        self.model = YoloModel()
+        self.declare_parameter(
+            'image_topic',
+            '/camera/image_raw/image_color'
+        )
+        self.declare_parameter(
+            'model_path',
+            'yolov8n.pt'
+        )
+        self.declare_parameter(
+            'confidence_threshold',
+            0.35
+        )
+        self.declare_parameter(
+            'target_classes',
+            'bottle,cup,bowl'
+        )
+
+        target_classes = [
+            item.strip()
+            for item in self.get_parameter(
+                'target_classes'
+            ).value.split(',')
+            if item.strip()
+        ]
+
+        self.model = YoloModel(
+            model_path=self.get_parameter('model_path').value,
+            confidence_threshold=float(
+                self.get_parameter('confidence_threshold').value
+            ),
+            target_classes=target_classes
+        )
 
         self.subscription = (
             self.create_subscription(
                 Image,
-                '/camera/image_raw',
+                self.get_parameter('image_topic').value,
                 self.image_callback,
                 10
             )
@@ -52,10 +83,12 @@ class TrashDetectorNode(Node):
         array_msg = (
             TrashDetection2DArray()
         )
+        array_msg.header = image_msg.header
 
         for result in results:
 
             det = TrashDetection2D()
+            det.header = image_msg.header
 
             det.class_name = (
                 result["class_name"]

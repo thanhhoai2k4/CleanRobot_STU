@@ -15,6 +15,15 @@ class TrashTrackerNode(Node):
             'trash_tracker_node'
         )
 
+        self.declare_parameter(
+            'min_observations',
+            3
+        )
+        self.min_observations = max(
+            1,
+            int(self.get_parameter('min_observations').value)
+        )
+
         self.subscription = (
             self.create_subscription(
                 TrashCandidateArray,
@@ -33,17 +42,21 @@ class TrashTrackerNode(Node):
         )
 
         self.counter = {}
+        self.get_logger().info(
+            'TrashTrackerNode started'
+        )
 
     def callback(self, msg):
 
         filtered = (
             TrashCandidateArray()
         )
+        filtered.header = msg.header
 
         for candidate in msg.candidates:
 
             key = (
-                candidate.class_name
+                candidate.id
             )
 
             self.counter[key] = (
@@ -51,7 +64,7 @@ class TrashTrackerNode(Node):
                 + 1
             )
 
-            if self.counter[key] >= 3:
+            if self.counter[key] >= self.min_observations:
 
                 filtered.candidates.append(
                     candidate

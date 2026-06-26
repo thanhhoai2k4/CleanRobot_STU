@@ -10,13 +10,19 @@ def generate_launch_description():
         Node(
             package='clean_robot_mission',
             executable='target_manager_node',
-            output='screen'
+            output='screen',
+            parameters=[
+                {'use_sim_time': True}
+            ]
         ),
 
         Node(
             package='clean_robot_mission',
             executable='mission_manager_node',
-            output='screen'
+            output='screen',
+            parameters=[
+                {'use_sim_time': True}
+            ]
         )
 
     ])

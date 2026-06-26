@@ -1,4 +1,4 @@
-# from setuptools import setup
+from setuptools import setup
 
 package_name = 'clean_robot_mission'
 
