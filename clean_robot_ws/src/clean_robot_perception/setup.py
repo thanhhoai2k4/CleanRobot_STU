@@ -49,6 +49,8 @@ setup(
             'trash_tracker_node = clean_robot_perception.trash_tracker_node:main',
 
             'fake_trash_candidate_node = clean_robot_perception.fake_trash_candidate_node:main',
+
+            'camera_dataset_capture_node = clean_robot_perception.camera_dataset_capture_node:main',
         ],
     },
 )
