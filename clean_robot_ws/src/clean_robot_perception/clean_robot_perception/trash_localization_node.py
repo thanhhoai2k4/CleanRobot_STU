@@ -2,7 +2,6 @@ import math
 
 import numpy as np
 import rclpy
-from cv_bridge import CvBridge
 from rclpy.duration import Duration
 from rclpy.node import Node
 from rclpy.time import Time
@@ -20,6 +19,8 @@ from clean_robot_msgs.msg import (
     TrashCandidateArray,
     TrashDetection2DArray,
 )
+
+from .image_utils import ImageConversionError, ImageUtils
 
 
 class TrashLocalizationNode(Node):
@@ -108,7 +109,6 @@ class TrashLocalizationNode(Node):
             float(self.get_parameter('id_grid_m').value)
         )
 
-        self.bridge = CvBridge()
         self.latest_depth = None
         self.latest_depth_stamp = None
         self.tf_buffer = Buffer()
@@ -149,11 +149,8 @@ class TrashLocalizationNode(Node):
 
     def depth_callback(self, msg):
         try:
-            depth = self.bridge.imgmsg_to_cv2(
-                msg,
-                desired_encoding='passthrough'
-            )
-        except Exception as exc:
+            depth = ImageUtils.image_msg_to_numpy(msg)
+        except ImageConversionError as exc:
             self.get_logger().warn(
                 f'Cannot convert depth image: {exc}',
                 throttle_duration_sec=2.0

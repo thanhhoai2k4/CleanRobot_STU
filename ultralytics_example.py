@@ -1,10 +1,10 @@
 from ultralytics import YOLO
 
 # Load a model
-model = YOLO("yolo26n.pt")  # pretrained YOLO26n model
+model = YOLO("best.pt")  # pretrained YOLO26n model
 
 # Run batched inference on a list of images
-results = model(["/home/thanhhoai/Truong_STU/CleanRobot_STU/IMG_5861.heic"])  # return a list of Results objects
+results = model(["dataset/images/clean_robot_20260627_190916_078_000027.jpg"])  # return a list of Results objects
 
 # Process results list
 for result in results:

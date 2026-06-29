@@ -1,5 +1,6 @@
-from cv_bridge import CvBridge
 from ultralytics import YOLO
+
+from .image_utils import ImageUtils
 
 
 class YoloModel:
@@ -11,7 +12,6 @@ class YoloModel:
         target_classes=None
     ):
         self.model = YOLO(model_path)
-        self.bridge = CvBridge()
         self.confidence_threshold = confidence_threshold
         self.target_classes = {
             name.strip().lower()
@@ -20,10 +20,7 @@ class YoloModel:
         }
 
     def detect(self, image_msg):
-        frame = self.bridge.imgmsg_to_cv2(
-            image_msg,
-            desired_encoding='bgr8'
-        )
+        frame = ImageUtils.to_bgr8(image_msg)
 
         predictions = self.model.predict(
             source=frame,

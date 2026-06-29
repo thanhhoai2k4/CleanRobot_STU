@@ -19,6 +19,8 @@
   <exec_depend>navigation2</exec_depend>
   <exec_depend>slam_toolbox</exec_depend>
   <exec_depend>clean_robot_simulation</exec_depend>
+  <exec_depend>clean_robot_perception</exec_depend>
+  <exec_depend>clean_robot_mission</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>

@@ -2,12 +2,13 @@ from datetime import datetime
 from pathlib import Path
 
 import cv2
-from cv_bridge import CvBridge, CvBridgeError
 import rclpy
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
+
+from .image_utils import ImageConversionError, ImageUtils
 
 
 def default_output_dir():
@@ -85,7 +86,6 @@ class CameraDatasetCaptureNode(Node):
             exist_ok=True
         )
 
-        self.bridge = CvBridge()
         self.latest_image_msg = None
         self.has_new_image = False
         self.saved_count = 0
@@ -126,11 +126,8 @@ class CameraDatasetCaptureNode(Node):
             return
 
         try:
-            frame = self.bridge.imgmsg_to_cv2(
-                self.latest_image_msg,
-                desired_encoding='bgr8'
-            )
-        except CvBridgeError as exc:
+            frame = ImageUtils.to_bgr8(self.latest_image_msg)
+        except ImageConversionError as exc:
             self.get_logger().error(
                 f'Failed to convert image: {exc}'
             )

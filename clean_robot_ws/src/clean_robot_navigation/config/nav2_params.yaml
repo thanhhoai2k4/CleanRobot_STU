@@ -8,7 +8,13 @@ amcl:
     base_frame_id: "base_footprint"
     global_frame_id: "map"
     odom_frame_id: "odom"
-    scan_topic: "scan"
+    scan_topic: "/scan_normalized"
+    set_initial_pose: True
+    initial_pose:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      yaw: 0.0
 
 bt_navigator:
   ros__parameters:
@@ -215,7 +221,7 @@ collision_monitor:
     observation_sources: ["scan"]
     scan:
       type: "scan"
-      topic: "scan"
+      topic: "/scan_normalized"
       min_height: 0.0
       max_height: 2.0
       enabled: True
@@ -284,7 +290,7 @@ local_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: /scan
+          topic: /scan_normalized
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -311,7 +317,7 @@ global_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: /scan
+          topic: /scan_normalized
           max_obstacle_height: 2.0
           clearing: True
           marking: True

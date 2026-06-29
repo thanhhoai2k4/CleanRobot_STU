@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import rclpy
 
 from rclpy.node import Node
@@ -10,6 +12,15 @@ from clean_robot_msgs.msg import (
 )
 
 from .yolo_model import YoloModel
+
+
+def default_model_path():
+    for parent in Path(__file__).resolve().parents:
+        candidate = parent / 'best.pt'
+        if candidate.is_file():
+            return str(candidate)
+
+    return 'best.pt'
 
 
 class TrashDetectorNode(Node):
@@ -26,7 +37,7 @@ class TrashDetectorNode(Node):
         )
         self.declare_parameter(
             'model_path',
-            'yolov8n.pt'
+            default_model_path()
         )
         self.declare_parameter(
             'confidence_threshold',
@@ -34,7 +45,7 @@ class TrashDetectorNode(Node):
         )
         self.declare_parameter(
             'target_classes',
-            'bottle,cup,bowl'
+            'chai_nhua,lon_nuoc'
         )
 
         target_classes = [

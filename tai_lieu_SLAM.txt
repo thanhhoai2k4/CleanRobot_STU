@@ -76,3 +76,40 @@ SLAM: Cần /odom /tf /scan
   ros2 topic echo --once /odom
 
   Nếu /odom đổi x/y thì robot đã chạy thật trong Webots.
+
+
+
+
+
+• Bây giờ câu trả lời là: có thể chạy flow phát hiện rác -> tạo target -> Nav2 chạy tới rác, nhưng vẫn phụ thuộc 2 điều kiện thực
+  tế: best.pt có detect được rác trong Webots và static map my_map.yaml phải khớp với vị trí robot/world lúc khởi động.
+
+  Tôi đã chỉnh để bắt buộc dùng static map:
+
+  - nav2.launch.py giờ chạy Nav2 bằng bringup_launch.py với map_server + AMCL + navigation, không còn chỉ chạy navigation stack.
+  - Static map mặc định: clean_robot_navigation/maps/my_map.yaml.
+  - Không cần chạy slam.launch.py cho mục tiêu này.
+  - Nav2 dùng /scan_normalized cho AMCL/costmap.
+  - AMCL tự set initial pose (0, 0, 0) để không cần set pose bằng RViz lúc đầu.
+  - Thêm launch tổng: trash_static_flow.launch.py để mở simulation + static Nav2 + perception + mission.
+  - Mission giờ gửi goal tới điểm tiếp cận gần rác, cách rác mặc định 0.35m, thay vì gửi đúng tâm chai/lon. Cách này giảm khả năng
+    Nav2 reject goal vì goal nằm trong obstacle.
+
+  Lệnh chạy chính:
+
+  cd /home/thanhhoai/Truong_STU/CleanRobot_STU/clean_robot_ws
+  source install/setup.bash
+  export ROS_LOG_DIR=/tmp/clean_robot_ros_log
+  ros2 launch clean_robot_navigation trash_static_flow.launch.py
+
+  Không chạy kèm slam.launch.py khi dùng flow này.
+
+  Đã kiểm tra:
+
+  - colcon build toàn workspace pass: 6 packages finished.
+  - nav2.launch.py --show-args thấy map mặc định trỏ đúng my_map.yaml.
+  - trash_static_flow.launch.py --show-args load được.
+  - target_manager_node import OK sau khi thêm TF logic.
+
+  Điểm còn cần quan sát khi chạy Webots: nếu robot xoay tìm nhưng không đi, kiểm tra /trash/detections và /trash/
+  tracked_candidates; nếu có target nhưng Nav2 không chạy, kiểm tra /tf, /map, lifecycle Nav2, và map có khớp world không.

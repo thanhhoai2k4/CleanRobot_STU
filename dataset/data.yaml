@@ -1,0 +1,7 @@
+
+path: /content/dataset # Đường dẫn gốc (tuyệt đối) đến thư mục chứa ảnh và nhãn
+train: images         # Đường dẫn đến thư mục ảnh train, tương đối với 'path'
+val: images           # Đường dẫn đến thư mục ảnh val, tương đối với 'path'
+
+nc: 2
+names: ['chai_nhua', 'lon_nuoc']

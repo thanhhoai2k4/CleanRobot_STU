@@ -32,6 +32,15 @@ def generate_launch_description():
             parameters=[
                 {'use_sim_time': True}
             ]
+        ),
+
+        Node(
+            package='clean_robot_perception',
+            executable='trash_marker_node',
+            output='screen',
+            parameters=[
+                {'use_sim_time': True}
+            ]
         )
 
     ])
